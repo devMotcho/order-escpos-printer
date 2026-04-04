@@ -1,4 +1,4 @@
-package com.escpos.printer.order.utils;
+package com.escpos.printer.utils;
 
 public class StringUtils {
     /**

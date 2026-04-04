@@ -11,14 +11,21 @@
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
+        <jackson.version>3.0.0</jackson.version>
     </properties>
 
-    <!-- Source: https://mvnrepository.com/artifact/io.github.cdimascio/dotenv-java -->
     <dependencies> 
+        <!-- Source: https://mvnrepository.com/artifact/io.github.cdimascio/dotenv-java -->
         <dependency>
             <groupId>io.github.cdimascio</groupId>
             <artifactId>dotenv-java</artifactId>
             <version>3.0.0</version>
         </dependency>
+        <!-- Source: https://github.com/FasterXML/jackson-databind -->
+        <dependency>
+            <groupId>tools.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>   
     </dependencies>
 </project>

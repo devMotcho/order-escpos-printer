@@ -1,7 +1,8 @@
 package com.escpos.printer.settings;
 
 import com.escpos.printer.exceptions.ConfigurationException;
-import com.escpos.printer.order.utils.StringUtils;
+import com.escpos.printer.utils.StringUtils;
+
 import io.github.cdimascio.dotenv.Dotenv;
 
 /**
