@@ -4,6 +4,7 @@ import java.net.http.HttpClient;
 
 import com.escpos.printer.authentication.AuthResponse;
 import com.escpos.printer.authentication.AuthService;
+import com.escpos.printer.authentication.RestAuthService;
 import com.escpos.printer.settings.AppSettings;
 import com.escpos.printer.settings.Config;
 
@@ -20,7 +21,7 @@ public class Main {
         ObjectMapper mapper = new ObjectMapper();
         String loginUrl = config.baseUrl() + config.authUrl();
 
-        AuthService authService = new AuthService(client, mapper);
+        AuthService authService = new RestAuthService(client, mapper);
 
         try {
             AuthResponse auth = authService.login(loginUrl, config.username(), config.password());
@@ -28,6 +29,5 @@ public class Main {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 }
