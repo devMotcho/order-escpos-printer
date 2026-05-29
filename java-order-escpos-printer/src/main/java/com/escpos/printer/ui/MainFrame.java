@@ -6,6 +6,7 @@ import com.escpos.printer.service.ServiceStateListener;
 
 import javax.swing.*;
 import java.awt.*;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -15,12 +16,10 @@ public class MainFrame extends JFrame implements ServiceStateListener {
 
     private JLabel statusLabel;
     private JTextArea logArea;
-    private JButton toggleLogsBtn;
     private JButton restartBtn;
     private JButton stopAlertBtn;
     private JButton exitBtn;
     
-    private boolean logsVisible = false;
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
     public MainFrame(PollingService pollingService, AlertManager alertManager) {
@@ -30,11 +29,27 @@ public class MainFrame extends JFrame implements ServiceStateListener {
     }
 
     private void initUI() {
-        setTitle("Serviço de Impressão ESC/POS");
-        setSize(400, 150);
+        setTitle("Sistema de Impressão Rodizio");
+        setSize(400, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
         setResizable(false);
+
+        try {
+            URL iconUrl = getClass().getResource("/icon_nobg.png");
+            if (iconUrl != null) {
+                Image icon = Toolkit.getDefaultToolkit().getImage(iconUrl);
+                setIconImage(icon);
+                if (Taskbar.isTaskbarSupported()) {
+                    Taskbar taskbar = Taskbar.getTaskbar();
+                    if (taskbar.isSupported(Taskbar.Feature.ICON_IMAGE)) {
+                        taskbar.setIconImage(icon);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Aviso: Falha ao carregar icone.");
+        }
 
         // Top panel for status
         JPanel topPanel = new JPanel();
@@ -49,40 +64,25 @@ public class MainFrame extends JFrame implements ServiceStateListener {
 
         // Center panel for buttons
         JPanel buttonPanel = new JPanel(new FlowLayout());
-        toggleLogsBtn = new JButton("Mostrar Logs");
         restartBtn = new JButton("Reiniciar Serviço");
         stopAlertBtn = new JButton("Parar Alarme");
         stopAlertBtn.setEnabled(false);
         exitBtn = new JButton("Sair");
 
-        buttonPanel.add(toggleLogsBtn);
         buttonPanel.add(restartBtn);
         buttonPanel.add(stopAlertBtn);
         buttonPanel.add(exitBtn);
         add(buttonPanel, BorderLayout.CENTER);
 
-        // Logs area (hidden initially)
+        // Logs area (always visible)
         logArea = new JTextArea();
         logArea.setEditable(false);
         logArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
         JScrollPane scrollPane = new JScrollPane(logArea);
         scrollPane.setPreferredSize(new Dimension(380, 200));
+        add(scrollPane, BorderLayout.SOUTH);
 
         // Event listeners
-        toggleLogsBtn.addActionListener(e -> {
-            logsVisible = !logsVisible;
-            if (logsVisible) {
-                add(scrollPane, BorderLayout.SOUTH);
-                setSize(400, 400);
-                toggleLogsBtn.setText("Ocultar Logs");
-            } else {
-                remove(scrollPane);
-                setSize(400, 150);
-                toggleLogsBtn.setText("Mostrar Logs");
-            }
-            revalidate();
-            repaint();
-        });
 
         restartBtn.addActionListener(e -> {
             logMessage("A reiniciar o serviço...");

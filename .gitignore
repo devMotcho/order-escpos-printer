@@ -203,3 +203,7 @@ README.html
 .antigravitycli
 .github
 .env
+
+# Native App build directories
+dist/
+input_jpackage/

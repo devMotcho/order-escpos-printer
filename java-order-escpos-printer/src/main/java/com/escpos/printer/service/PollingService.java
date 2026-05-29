@@ -102,11 +102,11 @@ public class PollingService {
             }
 
             for (Order order : orders) {
-                notifyLog("A imprimir encomenda " + order.orderId() + "...");
+                notifyLog("A imprimir encomenda " + order.id() + "...");
                 printerClient.printOrder(order);
-                notifyLog("A atualizar o estado da encomenda " + order.orderId() + "...");
-                apiClient.updateOrderStatusToPrinted(order.orderId());
-                notifyLog("Encomenda " + order.orderId() + " processada com sucesso.");
+                notifyLog("A atualizar o estado da encomenda " + order.id() + "...");
+                apiClient.updateOrderStatusToPrinted(order.id());
+                notifyLog("Encomenda " + order.id() + " processada com sucesso.");
             }
 
             // Reset failures on success

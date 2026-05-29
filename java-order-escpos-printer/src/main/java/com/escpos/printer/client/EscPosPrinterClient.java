@@ -1,5 +1,6 @@
 package com.escpos.printer.client;
 
+import com.escpos.printer.model.MenuProduct;
 import com.escpos.printer.model.Order;
 import com.escpos.printer.model.OrderProduct;
 import com.escpos.printer.settings.Config;
@@ -7,7 +8,7 @@ import com.escpos.printer.settings.Config;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.nio.charset.StandardCharsets;
+import java.nio.charset.Charset;
 
 public class EscPosPrinterClient implements PrinterClient {
     private final Config config;
@@ -59,47 +60,65 @@ public class EscPosPrinterClient implements PrinterClient {
             alignCenter();
             setTextSize(1, 1);
             boldOn();
-            printText("NEW ORDER - " + order.type() + "\n");
+            printText("NOVA ENCOMENDA\n");
             boldOff();
             setTextSize(0, 0);
-            printText("Order ID: " + order.orderId() + "\n");
-            printText("Time: " + order.time() + "\n");
+            printText("ID Encomenda: " + order.id() + "\n");
+            printText("Criada: " + order.created() + "\n");
+            printText("Hora Entrega: " + (order.deliveryTime() != null ? order.deliveryTime() : "N/D") + "\n");
             printText("--------------------------------\n");
             
             // Customer
             alignLeft();
             boldOn();
-            printText("Customer Details:\n");
+            printText("Detalhes do Cliente:\n");
             boldOff();
-            if (order.customer() != null) {
-                printText("Name: " + order.customer().name() + "\n");
-                printText("Phone: " + order.customer().phone() + "\n");
-                if (order.customer().fullAddress() != null && !order.customer().fullAddress().isEmpty()) {
-                    printText("Address: " + order.customer().fullAddress() + "\n");
+            printText("Nome: " + (order.customerName() != null ? order.customerName() : "N/D") + "\n");
+            printText("Telemovel: " + (order.phoneNumber() != null ? order.phoneNumber() : "N/D") + "\n");
+            if (order.nif() != null && !order.nif().isEmpty()) {
+                printText("NIF: " + order.nif() + "\n");
+            }
+            if (order.fullAddress() != null && !order.fullAddress().isEmpty()) {
+                printText("Morada: " + order.fullAddress() + "\n");
+                if (order.localityName() != null && !order.localityName().isEmpty()) {
+                    printText("Localidade: " + order.localityName() + "\n");
                 }
             }
             printText("--------------------------------\n");
 
             // Products
             boldOn();
-            printText("Items:\n");
+            printText("Artigos:\n");
             boldOff();
-            if (order.products() != null) {
-                for (OrderProduct op : order.products()) {
-                    printText(op.quantity() + "x " + (op.product() != null ? op.product().name() : "Unknown") + "\n");
-                    if (op.specialNotes() != null && !op.specialNotes().isEmpty()) {
-                        printText("  Note: " + op.specialNotes() + "\n");
+            if (order.orderProducts() != null) {
+                for (OrderProduct op : order.orderProducts()) {
+                    printText(op.quantity() + "x " + (op.productName() != null ? op.productName() : "Desconhecido") + "\n");
+                    if (op.note() != null && !op.note().isEmpty()) {
+                        printText("  Nota: " + op.note() + "\n");
                     }
-                    printText("  Price: $" + op.price() + "\n");
+                    if (op.menuProducts() != null && !op.menuProducts().isEmpty()) {
+                        for (MenuProduct mp : op.menuProducts()) {
+                            printText("  - " + mp.quantity() + "x " + mp.name() + "\n");
+                        }
+                    }
+                    printText("  Preco: " + op.price() + " EUR\n");
                 }
             }
             printText("--------------------------------\n");
+
+            if (order.indication() != null && !order.indication().isEmpty()) {
+                boldOn();
+                printText("Indicacoes:\n");
+                boldOff();
+                printText(order.indication() + "\n");
+                printText("--------------------------------\n");
+            }
 
             // Total
             alignRight();
             setTextSize(1, 1);
             boldOn();
-            printText("TOTAL: $" + order.totalPrice() + "\n");
+            printText("TOTAL: " + order.totalPrice() + " EUR\n");
             boldOff();
             setTextSize(0, 0);
             alignLeft();
@@ -115,11 +134,12 @@ public class EscPosPrinterClient implements PrinterClient {
     }
 
     private void printText(String text) throws IOException {
-        out.write(text.getBytes(StandardCharsets.UTF_8));
+        out.write(text.getBytes(Charset.forName("IBM858")));
     }
 
     private void initPrinter() throws IOException {
-        out.write(new byte[]{0x1B, 0x40});
+        out.write(new byte[]{0x1B, 0x40}); // Initialize printer
+        out.write(new byte[]{0x1B, 0x74, 0x13}); // Set character code table to CP858 (19)
     }
 
     private void alignLeft() throws IOException {

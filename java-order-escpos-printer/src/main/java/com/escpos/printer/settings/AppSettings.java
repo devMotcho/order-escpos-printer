@@ -22,7 +22,34 @@ public class AppSettings {
     private final Config config;
 
     /** Static instance of the environment loader. */
-    private static final Dotenv ENV = Dotenv.load();
+    private static final Dotenv ENV = loadEnv();
+
+    private static Dotenv loadEnv() {
+        Dotenv env = Dotenv.configure().ignoreIfMissing().load();
+        if (env.get("BASE_URL") == null) {
+            env = Dotenv.configure()
+                    .directory(System.getProperty("user.home") + "/.rodizio")
+                    .ignoreIfMissing()
+                    .load();
+        }
+        if (env.get("BASE_URL") == null) {
+            try {
+                String path = new java.io.File(AppSettings.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getAbsolutePath();
+                int appIndex = path.indexOf(".app/");
+                if (appIndex != -1) {
+                    String appBundlePath = path.substring(0, appIndex + 4);
+                    String appDir = new java.io.File(appBundlePath).getParent();
+                    env = Dotenv.configure()
+                            .directory(appDir)
+                            .ignoreIfMissing()
+                            .load();
+                }
+            } catch (Exception e) {
+                // Ignore
+            }
+        }
+        return env;
+    }
 
     /**
      * Private constructor to enforce Singleton pattern.

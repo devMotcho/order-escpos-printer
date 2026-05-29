@@ -19,6 +19,10 @@ import java.net.http.HttpClient;
 
 public class Main {
     public static void main(String[] args) {
+        // macOS specific properties for app name
+        System.setProperty("apple.awt.application.name", "Sistema de Impressão Rodizio");
+        System.setProperty("apple.laf.useScreenMenuBar", "true");
+
         // Load Configuration
         AppSettings settings = AppSettings.getInstance();
         Config config = settings.config();

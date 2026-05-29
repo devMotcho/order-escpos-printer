@@ -67,17 +67,19 @@ It features a lightweight, cross-platform Swing GUI that indicates the real-time
    PASSWORD=your_password
    ```
 
-3. **Build the Project:**
+3. **Build the Standalone Executable (Fat JAR):**
+   The project is configured with the `maven-shade-plugin` to package all dependencies into a single JAR file.
    ```bash
-   mvn clean compile
+   mvn clean package
    ```
+   This will generate a `.jar` file in the `target/` directory (e.g., `java-order-escpos-printer-1.0-SNAPSHOT.jar`).
 
 4. **Run the Application:**
-   You can run the `Main` class directly via your IDE, or run it via Maven:
+   You can run the compiled JAR directly on any OS with Java installed:
    ```bash
-   mvn exec:java -Dexec.mainClass="com.escpos.printer.Main"
+   java -jar target/java-order-escpos-printer-1.0-SNAPSHOT.jar
    ```
 
-## Dependencies
-- [dotenv-java](https://github.com/cdimascio/dotenv-java) (Environment configuration)
-- [Jackson Databind](https://github.com/FasterXML/jackson-databind) (JSON parsing and mapping)
+## Packaging & Deployment
+
+For detailed instructions on packaging the application as a standalone native executable (`.app` for macOS or `.exe` for Windows) and properly configuring the `.env` file for production deployment, please refer to the [Deployment Guide](./docs/deployment_guide.md).

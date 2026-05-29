@@ -4,10 +4,17 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public record Order(
-    String orderId,
+    String id,
+    String customerName,
+    String email,
+    String nif,
+    String fullAddress,
+    String phoneNumber,
+    String deliveryTime,
+    String created,
+    List<OrderProduct> orderProducts,
     BigDecimal totalPrice,
-    String time,
-    String type,
-    Customer customer,
-    List<OrderProduct> products
+    boolean printed,
+    String localityName,
+    String indication
 ) {}
