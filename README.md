@@ -1,12 +1,13 @@
 # Order ESC/POS Printer Program
 
-This repository contains a high-performing Java application designed to poll an external API for food orders and automatically print them to an 80mm ESC/POS thermal printer over a local network. 
+This repository contains a high-performing Java application designed to poll an external API for food orders and automatically print them to an 80mm ESC/POS thermal printer over a local network.
 
 Check out the [high-level diagram of the information workflow](./docs/high_lvl_diagram_info_workflow.pdf).
 
 ## Overview
 
 The application runs as a background service that:
+
 1. **Authenticates** with a remote API to receive a JWT access token.
 2. **Polls** periodically to fetch unprinted food orders.
 3. **Prints** the orders to a networked ESC/POS thermal printer (via IP/Port), correctly formatting the receipt layout with custom alignments, bold text, and variable font sizes.
@@ -42,6 +43,7 @@ It features a lightweight, cross-platform Swing GUI that indicates the real-time
 ## Setup & Execution
 
 1. **Clone the repository:**
+
    ```bash
    git clone <repository_url>
    cd order-escpos-printer/java-order-escpos-printer
@@ -49,6 +51,7 @@ It features a lightweight, cross-platform Swing GUI that indicates the real-time
 
 2. **Configure Environment Variables:**
    Create a `.env` file in the project root with the following properties (map them according to `AppSettings.java` if using a specific `.env` mapping):
+
    ```env
    MAX_ATTEMPTS=5
    RETRY_DELAY=10
@@ -69,13 +72,16 @@ It features a lightweight, cross-platform Swing GUI that indicates the real-time
 
 3. **Build the Standalone Executable (Fat JAR):**
    The project is configured with the `maven-shade-plugin` to package all dependencies into a single JAR file.
+
    ```bash
    mvn clean package
    ```
+
    This will generate a `.jar` file in the `target/` directory (e.g., `java-order-escpos-printer-1.0-SNAPSHOT.jar`).
 
 4. **Run the Application:**
    You can run the compiled JAR directly on any OS with Java installed:
+
    ```bash
    java -jar target/java-order-escpos-printer-1.0-SNAPSHOT.jar
    ```
