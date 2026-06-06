@@ -69,7 +69,7 @@ public class AppSettings {
             getRequiredString("CHECK_SERVER_HEALTH"),
             getRequiredString("PRINTER_IP"),
             getRequiredInt("PRINTER_PORT"),
-            getRequiredString("USERNAME"),
+            getRequiredString("API_USERNAME"),
             getRequiredString("PASSWORD")
         );
     }
